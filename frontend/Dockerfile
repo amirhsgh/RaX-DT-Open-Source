@@ -7,8 +7,10 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (build tools like react-scripts/tailwindcss are
+# devDependencies, so the builder stage needs the full install; only the
+# static output below ends up in the final nginx image)
+RUN npm ci
 
 # Copy source code
 COPY . .

@@ -544,7 +544,6 @@ const ChatbotTab = ({ user }) => {
             What I can do
           </h3>
           <ul className="space-y-2 text-xs leading-relaxed text-muted-foreground">
-            <li>• Find compounds by name — no upload needed</li>
             <li>• Recognise your files without you labelling them</li>
             <li>• Start a docking run once you confirm</li>
             <li>• Report how a run is going, in plain language</li>
