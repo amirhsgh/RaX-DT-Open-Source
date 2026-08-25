@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: raxdt
+      POSTGRES_PASSWORD: raxdt
+      POSTGRES_DB: raxdt
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U raxdt"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend: &backend
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment: &backend-env
+      DATABASE_URL: postgresql+asyncpg://raxdt:raxdt@postgres:5432/raxdt
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      UPLOAD_DIR: /srv/data/uploads
+      TEMP_DIR: /srv/data/temp
+      RESULTS_DIR: /srv/data/results
+      # Optional: only set if you want the chatbot to use a real model
+      # instead of its built-in mock responses. See README for details.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Most reviewer machines have no GPU; GNINA runs on CPU by default.
+      # Set to "true" if you have an NVIDIA GPU + the nvidia container runtime.
+      GNINA_USE_GPU: ${GNINA_USE_GPU:-false}
+      ALLOWED_ORIGINS: http://localhost:3000
+    volumes:
+      - ./data:/srv/data
+    ports:
+      - "8000:8000"
+
+  celery_worker:
+    <<: *backend
+    ports: []
+    command: ["celery", "-A", "app.celery_app", "worker", "--loglevel=info"]
+    environment:
+      <<: *backend-env
+
+  frontend:
+    # The frontend calls the backend directly at http://localhost:8000 (baked
+    # in at build time - see frontend/.env), which works because the backend
+    # port below is published to the host, same as this one.
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,118 @@
+.molecule-viewer-card {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.molecule-viewer-card.fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1000 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+.molecule-viewer-card .ant-card-body {
+  padding: 0;
+}
+
+.molecule-viewer-card.fullscreen .ant-card-body {
+  height: calc(100vh - 57px);
+}
+
+.viewer-container {
+  position: relative;
+  background: #fafafa;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #d9d9d9;
+}
+
+.viewer-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #666;
+  z-index: 10;
+}
+
+.viewer-loading p {
+  margin-top: 16px;
+  color: #666;
+}
+
+.binding-affinity-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 5;
+}
+
+.viewer-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.viewer-controls .ant-select {
+  min-width: 100px;
+}
+
+/* NGL viewer custom styling */
+.ngl-viewer canvas {
+  border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .viewer-controls {
+    justify-content: center;
+  }
+  
+  .viewer-controls .ant-select {
+    min-width: 80px;
+    font-size: 12px;
+  }
+  
+  .binding-affinity-overlay {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}
+
+/* Custom NGL tooltip styling */
+.ngl-tooltip {
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: white !important;
+  border-radius: 4px !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  max-width: 200px !important;
+}
+
+/* Loading animation */
+@keyframes viewer-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.viewer-container > div:not(.viewer-loading) {
+  animation: viewer-fade-in 0.5s ease-in-out;
+}
