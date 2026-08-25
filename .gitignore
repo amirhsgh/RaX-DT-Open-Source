@@ -22,3 +22,14 @@ uploads/
 .vscode/
 .idea/
 .DS_Store
+
+SKILL.md
+collect_results.py
+evidence-protocol.md
+latex.md
+literature.md
+main.tex
+paper/
+results_to_latex.py
+scan_project.py
+writing-rules.md
